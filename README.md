@@ -22,4 +22,4 @@ Una vez que el boceto del diagrama de clase quedo bien armado lo pasamos https:/
 
 ![WhatsApp Image 2025-10-04 at 11 18 00](https://github.com/user-attachments/assets/b48f9210-7791-475e-8ee1-b30d0f7961d9)
 
-ACLARACION: No se utilizaron todos los datos que brindaba el csv sino que decidimos elegir los dtos que nosotros consideramos mas importantes para abarcar el trabajo final.
+ACLARACION: No se utilizaron todos los datos que brindaba el csv sino que decidimos elegir los datos que nosotros consideramos mas importantes para abarcar el trabajo final.
