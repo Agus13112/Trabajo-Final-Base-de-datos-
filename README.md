@@ -6,7 +6,9 @@ Hecho por Juan Comizzo y Agustin Vallejos
 Paso 1:
 
 Para realizar este trabajo final se tuvo que buscar una base de datos en formato csv. La cual la buscamos desde la pagina de Kaggle : https://www.kaggle.com/datasets.
-El link de la base de base es el siguiente: https://www.kaggle.com/code/mahmoudredagamail/football-players-stats-2025-2026
+El link de la base de base es el siguiente: 
+
+https://www.kaggle.com/code/mahmoudredagamail/football-players-stats-2025-2026
 
 Paso 2:
 
