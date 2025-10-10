@@ -1,7 +1,7 @@
 # Trabajo-Final-Base-de-datos-
 Registro de jugadores de las 5 ligas de Europa
 
-Hecho por Juan Comizzo y Agustin Vallejos
+Hecho por Juan Manuel Comizzo y Agustin Vallejos
 
 Paso 1:
 
