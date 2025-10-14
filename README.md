@@ -24,6 +24,90 @@ Una vez que el boceto del diagrama de clase quedo bien armado lo pasamos https:/
 
 Paso 3: 
   Creacion de la base de datos y sus tablas.
+
+  CREATE TABLE `jugadores` (
+  `id` integer PRIMARY KEY NOT NULL AUTO_INCREMENT,
+  `nombre` varchar(255),
+  `edad` integer,
+  `nacimiento` date,
+  `id_nacionalidad` integer,
+  `jugador_posicion` integer,
+  `jugador_estadisticas` integer
+);
+
+CREATE TABLE `nacionalidad` (
+  `id` integer PRIMARY KEY NOT NULL AUTO_INCREMENT,
+  `nombre` varchar(255)
+);
+
+CREATE TABLE `posicion` (
+  `id` integer PRIMARY KEY NOT NULL AUTO_INCREMENT,
+  `nombre` varchar(255)
+);
+
+CREATE TABLE `competicion` (
+  `id` integer PRIMARY KEY NOT NULL AUTO_INCREMENT,
+  `nombre` varchar(255)
+);
+
+CREATE TABLE `equipo` (
+  `id` integer PRIMARY KEY NOT NULL AUTO_INCREMENT,
+  `nombre` varchar(255),
+  `id_competicion` integer
+);
+
+CREATE TABLE `estadisticas` (
+  `id` integer PRIMARY KEY NOT NULL AUTO_INCREMENT,
+  `goles` integer,
+  `asistencias` integer,
+  `tarjetas_amarillas` integer,
+  `tarjetas_rojas` integer,
+  `minutos_jugados` time
+);
+
+CREATE TABLE `jugadores_estadisticas` (
+  `id_equipo` integer,
+  `id_jugador` integer,
+  `id_estadisticas` integer,
+  PRIMARY KEY (`id_equipo`, `id_jugador`, `id_estadisticas`)
+);
+
+CREATE TABLE `jugadores_posicion` (
+  `id_jugador` integer,
+  `id_posicion` integer,
+  `id_equipo` integer,
+  PRIMARY KEY (`id_jugador`, `id_posicion`, `id_equipo`)
+);
+
+-- Cada jugador pertenece a una nacionalidad
+ALTER TABLE `jugadores`
+ADD CONSTRAINT `fk_jugador_nacionalidad`
+FOREIGN KEY (`id_nacionalidad`) REFERENCES `nacionalidad` (`id`);
+
+-- Cada equipo pertenece a una competición
+ALTER TABLE `equipo`
+ADD CONSTRAINT `fk_equipo_competicion`
+FOREIGN KEY (`id_competicion`) REFERENCES `competicion` (`id`);
+
+-- Relación muchos a muchos entre jugadores, estadísticas y equipos
+ALTER TABLE `jugadores_estadisticas`
+ADD FOREIGN KEY (`id_jugador`) REFERENCES `jugadores` (`id`);
+
+ALTER TABLE `jugadores_estadisticas`
+ADD FOREIGN KEY (`id_equipo`) REFERENCES `equipo` (`id`);
+
+ALTER TABLE `jugadores_estadisticas`
+ADD FOREIGN KEY (`id_estadisticas`) REFERENCES `estadisticas` (`id`);
+
+-- Relación muchos a muchos entre jugadores, posición y equipos
+ALTER TABLE `jugadores_posicion`
+ADD FOREIGN KEY (`id_jugador`) REFERENCES `jugadores` (`id`);
+
+ALTER TABLE `jugadores_posicion`
+ADD FOREIGN KEY (`id_equipo`) REFERENCES `equipo` (`id`);
+
+ALTER TABLE `jugadores_posicion`
+ADD FOREIGN KEY (`id_posicion`) REFERENCES `posicion` (`id`);
   
 
 
@@ -33,7 +117,7 @@ Paso 3:
 
 Paso 4: 
 
-Creamos la base de datos en heidi, cargamos el CSV en una tabla especifica para este mismo. Y empezamos la normalizacion de las tablas con los datos.
+cargamos el CSV en una tabla especifica para este mismo. Y empezamos la normalizacion de las tablas con los datos.
 
 
 <img width="649" height="323" alt="imagen" src="https://github.com/user-attachments/assets/38697f59-5318-4063-910a-b485e11fc0f9" />
