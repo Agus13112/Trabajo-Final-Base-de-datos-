@@ -25,96 +25,46 @@ Una vez que el boceto del diagrama de clase quedo bien armado lo pasamos https:/
 Paso 3: 
   Creacion de la base de datos y sus tablas.
 
-  CREATE TABLE `jugadores` (
-  `id` integer PRIMARY KEY NOT NULL AUTO_INCREMENT,
-  `nombre` varchar(255),
-  `edad` integer,
-  `nacimiento` date,
-  `id_nacionalidad` integer,
-  `jugador_posicion` integer,
-  `jugador_estadisticas` integer
-);
+<img width="404" height="218" alt="imagen" src="https://github.com/user-attachments/assets/a06cad7e-00a7-400f-8994-b643b5a649e0" />
 
-CREATE TABLE `nacionalidad` (
-  `id` integer PRIMARY KEY NOT NULL AUTO_INCREMENT,
-  `nombre` varchar(255)
-);
+-----------------------------------------------------------------------------------------------------------------------------------
 
-CREATE TABLE `posicion` (
-  `id` integer PRIMARY KEY NOT NULL AUTO_INCREMENT,
-  `nombre` varchar(255)
-);
+<img width="411" height="97" alt="imagen" src="https://github.com/user-attachments/assets/74ef8a19-0c7c-4773-91de-074fb2dc33ba" />
 
-CREATE TABLE `competicion` (
-  `id` integer PRIMARY KEY NOT NULL AUTO_INCREMENT,
-  `nombre` varchar(255)
-);
+-----------------------------------------------------------------------------------------------------------------------------------
 
-CREATE TABLE `equipo` (
-  `id` integer PRIMARY KEY NOT NULL AUTO_INCREMENT,
-  `nombre` varchar(255),
-  `id_competicion` integer
-);
+<img width="403" height="100" alt="imagen" src="https://github.com/user-attachments/assets/760b8522-07dd-4260-ba2a-d80cda3525ea" />
 
-CREATE TABLE `estadisticas` (
-  `id` integer PRIMARY KEY NOT NULL AUTO_INCREMENT,
-  `goles` integer,
-  `asistencias` integer,
-  `tarjetas_amarillas` integer,
-  `tarjetas_rojas` integer,
-  `minutos_jugados` time
-);
+-----------------------------------------------------------------------------------------------------------------------------------
 
-CREATE TABLE `jugadores_estadisticas` (
-  `id_equipo` integer,
-  `id_jugador` integer,
-  `id_estadisticas` integer,
-  PRIMARY KEY (`id_equipo`, `id_jugador`, `id_estadisticas`)
-);
+<img width="404" height="97" alt="imagen" src="https://github.com/user-attachments/assets/87acb732-c9d3-4de0-8be3-476ae0cd8ef9" />
 
-CREATE TABLE `jugadores_posicion` (
-  `id_jugador` integer,
-  `id_posicion` integer,
-  `id_equipo` integer,
-  PRIMARY KEY (`id_jugador`, `id_posicion`, `id_equipo`)
-);
+-----------------------------------------------------------------------------------------------------------------------------------
 
--- Cada jugador pertenece a una nacionalidad
-ALTER TABLE `jugadores`
-ADD CONSTRAINT `fk_jugador_nacionalidad`
-FOREIGN KEY (`id_nacionalidad`) REFERENCES `nacionalidad` (`id`);
+<img width="405" height="119" alt="imagen" src="https://github.com/user-attachments/assets/b681b3e8-5336-4a7c-bacf-53aa7ded849a" />
 
--- Cada equipo pertenece a una competición
-ALTER TABLE `equipo`
-ADD CONSTRAINT `fk_equipo_competicion`
-FOREIGN KEY (`id_competicion`) REFERENCES `competicion` (`id`);
+-----------------------------------------------------------------------------------------------------------------------------------
 
--- Relación muchos a muchos entre jugadores, estadísticas y equipos
-ALTER TABLE `jugadores_estadisticas`
-ADD FOREIGN KEY (`id_jugador`) REFERENCES `jugadores` (`id`);
+<img width="405" height="194" alt="imagen" src="https://github.com/user-attachments/assets/f88b8954-f57e-4509-977e-131a2d9db551" />
 
-ALTER TABLE `jugadores_estadisticas`
-ADD FOREIGN KEY (`id_equipo`) REFERENCES `equipo` (`id`);
+-----------------------------------------------------------------------------------------------------------------------------------
 
-ALTER TABLE `jugadores_estadisticas`
-ADD FOREIGN KEY (`id_estadisticas`) REFERENCES `estadisticas` (`id`);
+<img width="476" height="144" alt="imagen" src="https://github.com/user-attachments/assets/f8044a1f-6ee3-45e1-b5ab-8f7c4de6638e" />
 
--- Relación muchos a muchos entre jugadores, posición y equipos
-ALTER TABLE `jugadores_posicion`
-ADD FOREIGN KEY (`id_jugador`) REFERENCES `jugadores` (`id`);
+-----------------------------------------------------------------------------------------------------------------------------------
 
-ALTER TABLE `jugadores_posicion`
-ADD FOREIGN KEY (`id_equipo`) REFERENCES `equipo` (`id`);
+<img width="446" height="146" alt="imagen" src="https://github.com/user-attachments/assets/5ef1de30-b777-4af8-b841-649cdb1caf94" />
 
-ALTER TABLE `jugadores_posicion`
-ADD FOREIGN KEY (`id_posicion`) REFERENCES `posicion` (`id`);
+-----------------------------------------------------------------------------------------------------------------------------------
+
+<img width="498" height="414" alt="imagen" src="https://github.com/user-attachments/assets/b9271836-ccc5-4322-a3d1-449d052a0e7e" />
+
+-----------------------------------------------------------------------------------------------------------------------------------
+
+<img width="503" height="216" alt="imagen" src="https://github.com/user-attachments/assets/40ddf648-79b7-4824-992e-07a2ccea1f61" />
+
+
   
-
-
-
-
-
-
 Paso 4: 
 
 cargamos el CSV en una tabla especifica para este mismo. Y empezamos la normalizacion de las tablas con los datos.
