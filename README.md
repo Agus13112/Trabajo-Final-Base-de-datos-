@@ -36,6 +36,27 @@ Paso 4:
 Creamos la base de datos en heidi, cargamos el CSV en una tabla especifica para este mismo. Y empezamos la normalizacion de las tablas con los datos.
 
 
+<img width="649" height="323" alt="imagen" src="https://github.com/user-attachments/assets/38697f59-5318-4063-910a-b485e11fc0f9" />
+
+<img width="609" height="290" alt="imagen" src="https://github.com/user-attachments/assets/e8964e95-a927-4060-9d97-22e198b6539e" />
+
+<img width="657" height="310" alt="imagen" src="https://github.com/user-attachments/assets/a229eff9-c117-4315-80fc-d334fdfd1f75" />
+
+<img width="600" height="419" alt="imagen" src="https://github.com/user-attachments/assets/ee2fc081-b48b-4a7d-8c50-26d7c18f4c29" />
+
+<img width="681" height="344" alt="imagen" src="https://github.com/user-attachments/assets/6c6bc3d7-924a-4665-948e-df57569a0190" />
+
+<img width="571" height="383" alt="imagen" src="https://github.com/user-attachments/assets/b03c05e7-7f91-4502-9338-58cc82ad1dc8" />
+
+<img width="564" height="457" alt="imagen" src="https://github.com/user-attachments/assets/20fa52c6-ab5a-4918-b1ca-730b7ad44d8b" />
+
+<img width="606" height="420" alt="imagen" src="https://github.com/user-attachments/assets/e60dbf11-0872-4c6b-a617-d5e06f7ae52e" />
+
+
+
+
+
+
 
 
 ACLARACION: No se utilizaron todos los datos que brindaba el csv sino que decidimos elegir los datos que nosotros consideramos mas importantes para abarcar el trabajo final.
