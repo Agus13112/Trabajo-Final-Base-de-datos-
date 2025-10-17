@@ -24,8 +24,8 @@ Una vez que el boceto del diagrama de clase quedo bien armado lo pasamos https:/
 
 Paso 3: 
   Creacion de la base de datos y sus tablas.
-
 Tabla Jugadores
+  
 <img width="404" height="218" alt="imagen" src="https://github.com/user-attachments/assets/a06cad7e-00a7-400f-8994-b643b5a649e0" />
 
 -----------------------------------------------------------------------------------------------------------------------------------
