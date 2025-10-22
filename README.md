@@ -158,37 +158,177 @@ Paso 4:
 
 cargamos el CSV en una tabla especifica para este mismo. Y empezamos la normalizacion de las tablas con los datos.
 
+```sql
+USE jugadores;
 
-<img width="649" height="323" alt="imagen" src="https://github.com/user-attachments/assets/38697f59-5318-4063-910a-b485e11fc0f9" />
+-- =============================================
+-- PASO 1: Poblar COMPETICION
+-- =============================================
+INSERT INTO competicion (nombre)
+SELECT DISTINCT Comp
+FROM players_data_light-2025_2026
+WHERE Comp IS NOT NULL
+  AND TRIM(Comp) != '';
 
------------------------------------------------------------------------------------------------------------------------------------
-
-<img width="609" height="290" alt="imagen" src="https://github.com/user-attachments/assets/e8964e95-a927-4060-9d97-22e198b6539e" />
-
------------------------------------------------------------------------------------------------------------------------------------
-
-<img width="657" height="310" alt="imagen" src="https://github.com/user-attachments/assets/a229eff9-c117-4315-80fc-d334fdfd1f75" />
-
------------------------------------------------------------------------------------------------------------------------------------
-
-<img width="600" height="419" alt="imagen" src="https://github.com/user-attachments/assets/ee2fc081-b48b-4a7d-8c50-26d7c18f4c29" />
-
------------------------------------------------------------------------------------------------------------------------------------
-
-<img width="681" height="344" alt="imagen" src="https://github.com/user-attachments/assets/6c6bc3d7-924a-4665-948e-df57569a0190" />
+SELECT CONCAT('✓ Competiciones insertadas: ', COUNT(*), ' registros') AS resultado
+FROM competicion;
+```
 
 -----------------------------------------------------------------------------------------------------------------------------------
 
-<img width="571" height="383" alt="imagen" src="https://github.com/user-attachments/assets/b03c05e7-7f91-4502-9338-58cc82ad1dc8" />
+```sql
+-- =============================================
+-- PASO 2: Poblar EQUIPO
+-- =============================================
+INSERT INTO equipo (nombre, id_competicion)
+SELECT DISTINCT p.Squad, c.id
+FROM players_data_light-2025_2026 p
+INNER JOIN competicion c ON c.nombre = p.Comp
+WHERE p.Squad IS NOT NULL
+  AND TRIM(p.Squad) != '';
+
+SELECT CONCAT('✓ Equipos insertados: ', COUNT(*), ' registros') AS resultado
+FROM equipo;
+```
 
 -----------------------------------------------------------------------------------------------------------------------------------
 
-<img width="564" height="457" alt="imagen" src="https://github.com/user-attachments/assets/20fa52c6-ab5a-4918-b1ca-730b7ad44d8b" />
+```sql
+-- =============================================
+-- PASO 3: Poblar NACIONALIDAD
+-- =============================================
+-- Extrae el código de país (ej: "us USA" -> "USA")
+INSERT INTO nacionalidad (nombre)
+SELECT DISTINCT TRIM(SUBSTRING_INDEX(Nation, ' ', -1)) AS pais
+FROM players_data_light-2025_2026
+WHERE Nation IS NOT NULL
+  AND TRIM(Nation) != ''
+ORDER BY pais;
+
+SELECT CONCAT('✓ Nacionalidades insertadas: ', COUNT(*), ' registros') AS resultado
+FROM nacionalidad;
+```
 
 -----------------------------------------------------------------------------------------------------------------------------------
 
-<img width="606" height="420" alt="imagen" src="https://github.com/user-attachments/assets/e60dbf11-0872-4c6b-a617-d5e06f7ae52e" />
+```sql
+-- =============================================
+-- PASO 4: Poblar POSICION
+-- =============================================
+-- Maneja posiciones múltiples separadas por coma (ej: "FW,MF")
+INSERT INTO posicion (nombre)
+SELECT DISTINCT pos_limpia
+FROM (
+    SELECT DISTINCT TRIM(SUBSTRING_INDEX(SUBSTRING_INDEX(p.Pos, ',', n.n), ',', -1)) AS pos_limpia
+    FROM players_data_light-2025_2026 p
+    CROSS JOIN (
+        SELECT 1 AS n UNION ALL SELECT 2 UNION ALL SELECT 3 UNION ALL SELECT 4
+    ) n
+    WHERE p.Pos IS NOT NULL
+      AND TRIM(p.Pos) != ''
+      AND CHAR_LENGTH(p.Pos) - CHAR_LENGTH(REPLACE(p.Pos, ',', '')) >= n.n - 1
+) posiciones
+WHERE pos_limpia IS NOT NULL
+  AND pos_limpia != ''
+ORDER BY pos_limpia;
 
+SELECT CONCAT('✓ Posiciones insertadas: ', COUNT(*), ' registros') AS resultado
+FROM posicion;
+```
+
+-----------------------------------------------------------------------------------------------------------------------------------
+
+```sql
+-- =============================================
+-- PASO 5: Poblar ESTADISTICAS
+-- =============================================
+-- Crea un registro de estadísticas por cada jugador
+INSERT INTO estadisticas (goles, asistencias, tarjetas_amarillas, tarjetas_rojas, minutos_jugados)
+SELECT
+    IFNULL(Gls, 0) AS goles,
+    IFNULL(Ast, 0) AS asistencias,
+    IFNULL(CrdY, 0) AS tarjetas_amarillas,
+    IFNULL(CrdR, 0) AS tarjetas_rojas,
+    SEC_TO_TIME(IFNULL(Min, 0) * 60) AS minutos_jugados
+FROM players_data_light-2025_2026
+WHERE Player IS NOT NULL;
+
+SELECT CONCAT('✓ Estadísticas insertadas: ', COUNT(*), ' registros') AS resultado
+FROM estadisticas;
+```
+
+-----------------------------------------------------------------------------------------------------------------------------------
+
+```sql
+-- =============================================
+-- PASO 6: Poblar JUGADORES
+-- =============================================
+INSERT INTO jugadores (nombre, edad, nacimiento, id_nacionalidad)
+SELECT
+    p.Player,
+    FLOOR(p.Age) AS edad,
+    CASE
+        WHEN p.Born IS NOT NULL AND p.Born > 1900 THEN DATE(CONCAT(p.Born, '-01-01'))
+        ELSE NULL
+    END AS nacimiento,
+    n.id AS id_nacionalidad
+FROM players_data_light-2025_2026 p
+LEFT JOIN nacionalidad n ON n.nombre = TRIM(SUBSTRING_INDEX(p.Nation, ' ', -1))
+WHERE p.Player IS NOT NULL;
+
+SELECT CONCAT('✓ Jugadores insertados: ', COUNT(*), ' registros') AS resultado
+FROM jugadores;
+```
+
+-----------------------------------------------------------------------------------------------------------------------------------
+
+```sql
+-- Tabla temporal para asociar IDs
+CREATE TEMPORARY TABLE temp_mapping AS
+SELECT
+    j.id AS id_jugador,
+    e.id AS id_equipo,
+    @row_num := @row_num + 1 AS row_num
+FROM jugadores j
+INNER JOIN players_data_light-2025_2026 p ON j.nombre = p.Player
+INNER JOIN equipo e ON e.nombre = p.Squad
+CROSS JOIN (SELECT @row_num := 0) r
+ORDER BY j.id;
+
+-- Insertar relaciones
+INSERT INTO jugadores_estadisticas (id_equipo, id_jugador, id_estadisticas)
+SELECT tm.id_equipo, tm.id_jugador, tm.row_num AS id_estadisticas
+FROM temp_mapping tm;
+
+DROP TEMPORARY TABLE temp_mapping;
+
+SELECT CONCAT('✓ Relaciones jugador-estadísticas: ', COUNT(*), ' registros') AS resultado
+FROM jugadores_estadisticas;
+
+
+-- =============================================
+-- PASO 8: Relacionar JUGADORES con POSICIONES
+-- =============================================
+-- Maneja posiciones múltiples por jugador
+INSERT INTO jugadores_posicion (id_jugador, id_posicion, id_equipo)
+SELECT DISTINCT
+    j.id AS id_jugador,
+    pos.id AS id_posicion,
+    e.id AS id_equipo
+FROM players_data_light-2025_2026 p
+INNER JOIN jugadores j ON j.nombre = p.Player
+INNER JOIN equipo e ON e.nombre = p.Squad
+CROSS JOIN (
+    SELECT 1 AS n UNION ALL SELECT 2 UNION ALL SELECT 3 UNION ALL SELECT 4
+) nums
+INNER JOIN posicion pos ON pos.nombre = TRIM(SUBSTRING_INDEX(SUBSTRING_INDEX(p.Pos, ',', nums.n), ',', -1))
+WHERE p.Pos IS NOT NULL
+  AND TRIM(p.Pos) != ''
+  AND CHAR_LENGTH(p.Pos) - CHAR_LENGTH(REPLACE(p.Pos, ',', '')) >= nums.n - 1;
+
+SELECT CONCAT('✓ Relaciones jugador-posiciones: ', COUNT(*), ' registros') AS resultado
+FROM jugadores_posicion;
+```
 
 
 
