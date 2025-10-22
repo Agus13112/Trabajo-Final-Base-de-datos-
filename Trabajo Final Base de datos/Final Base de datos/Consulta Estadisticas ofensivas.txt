@@ -1,0 +1,85 @@
+-- ============================================
+-- SECCIÓN 2: ESTADÍSTICAS OFENSIVAS
+-- ============================================
+
+-- 2.1 Top 20 Goleadores
+SELECT 
+    j.nombre,
+    j.edad,
+    e.nombre as equipo,
+    c.nombre as competicion,
+    est.goles,
+    est.asistencias,
+    (est.goles + est.asistencias) as participaciones_gol
+FROM jugadores j
+INNER JOIN jugadores_estadisticas je ON j.id = je.id_jugador
+INNER JOIN estadisticas est ON je.id_estadisticas = est.id
+INNER JOIN equipo e ON je.id_equipo = e.id
+INNER JOIN competicion c ON e.id_competicion = c.id
+WHERE est.goles > 0
+ORDER BY est.goles DESC, est.asistencias DESC
+LIMIT 20;
+
+-- 2.2 Top 20 Asistentes
+SELECT 
+    j.nombre,
+    j.edad,
+    e.nombre as equipo,
+    c.nombre as competicion,
+    est.asistencias,
+    est.goles
+FROM jugadores j
+INNER JOIN jugadores_estadisticas je ON j.id = je.id_jugador
+INNER JOIN estadisticas est ON je.id_estadisticas = est.id
+INNER JOIN equipo e ON je.id_equipo = e.id
+INNER JOIN competicion c ON e.id_competicion = c.id
+WHERE est.asistencias > 0
+ORDER BY est.asistencias DESC, est.goles DESC
+LIMIT 20;
+
+-- 2.3 Jugadores con más participaciones en goles (goles + asistencias)
+SELECT 
+    j.nombre,
+    e.nombre as equipo,
+    c.nombre as competicion,
+    est.goles,
+    est.asistencias,
+    (est.goles + est.asistencias) as participaciones_gol
+FROM jugadores j
+INNER JOIN jugadores_estadisticas je ON j.id = je.id_jugador
+INNER JOIN estadisticas est ON je.id_estadisticas = est.id
+INNER JOIN equipo e ON je.id_equipo = e.id
+INNER JOIN competicion c ON e.id_competicion = c.id
+WHERE (est.goles + est.asistencias) > 0
+ORDER BY participaciones_gol DESC
+LIMIT 20;
+
+-- 2.4 Goleadores por competición
+SELECT 
+    c.nombre as competicion,
+    j.nombre,
+    e.nombre as equipo,
+    est.goles
+FROM competicion c
+INNER JOIN equipo e ON c.id = e.id_competicion
+INNER JOIN jugadores_estadisticas je ON e.id = je.id_equipo
+INNER JOIN jugadores j ON je.id_jugador = j.id
+INNER JOIN estadisticas est ON je.id_estadisticas = est.id
+WHERE est.goles > 0
+ORDER BY c.nombre, est.goles DESC;
+
+-- 2.5 Promedio de goles por equipo
+SELECT 
+    e.nombre as equipo,
+    c.nombre as competicion,
+    COUNT(DISTINCT j.id) as jugadores,
+    SUM(est.goles) as goles_totales,
+    ROUND(AVG(est.goles), 2) as promedio_goles_por_jugador
+FROM equipo e
+INNER JOIN competicion c ON e.id_competicion = c.id
+INNER JOIN jugadores_estadisticas je ON e.id = je.id_equipo
+INNER JOIN jugadores j ON je.id_jugador = j.id
+INNER JOIN estadisticas est ON je.id_estadisticas = est.id
+GROUP BY e.nombre, c.nombre
+ORDER BY goles_totales DESC
+LIMIT 20;

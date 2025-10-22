@@ -1,0 +1,62 @@
+USE jugadores;
+
+-- ============================================
+-- SECCIÓN 1: CONSULTAS BÁSICAS DE INFORMACIÓN
+-- ============================================
+
+-- 1.1 Ver todos los jugadores con información completa
+SELECT 
+    j.id,
+    j.nombre,
+    j.edad,
+    j.nacimiento,
+    n.nombre as nacionalidad,
+    e.nombre as equipo,
+    c.nombre as competicion
+FROM jugadores j
+LEFT JOIN nacionalidad n ON j.id_nacionalidad = n.id
+LEFT JOIN jugadores_estadisticas je ON j.id = je.id_jugador
+LEFT JOIN equipo e ON je.id_equipo = e.id
+LEFT JOIN competicion c ON e.id_competicion = c.id
+ORDER BY j.nombre;
+
+-- 1.2 Contar total de registros en cada tabla
+SELECT 'Jugadores' as Tabla, COUNT(*) as Total FROM jugadores
+UNION ALL SELECT 'Equipos', COUNT(*) FROM equipo
+UNION ALL SELECT 'Competiciones', COUNT(*) FROM competicion
+UNION ALL SELECT 'Nacionalidades', COUNT(*) FROM nacionalidad
+UNION ALL SELECT 'Posiciones', COUNT(*) FROM posicion
+UNION ALL SELECT 'Estadísticas', COUNT(*) FROM estadisticas;
+
+-- 1.3 Ver jugadores por competición
+SELECT 
+    c.nombre as competicion,
+    COUNT(DISTINCT j.id) as total_jugadores
+FROM competicion c
+INNER JOIN equipo e ON c.id = e.id_competicion
+INNER JOIN jugadores_estadisticas je ON e.id = je.id_equipo
+INNER JOIN jugadores j ON je.id_jugador = j.id
+GROUP BY c.nombre
+ORDER BY total_jugadores DESC;
+
+-- 1.4 Ver equipos por competición
+SELECT 
+    c.nombre as competicion,
+    e.nombre as equipo,
+    COUNT(DISTINCT j.id) as jugadores
+FROM competicion c
+INNER JOIN equipo e ON c.id = e.id_competicion
+LEFT JOIN jugadores_estadisticas je ON e.id = je.id_equipo
+LEFT JOIN jugadores j ON je.id_jugador = j.id
+GROUP BY c.nombre, e.nombre
+ORDER BY c.nombre, jugadores DESC;
+
+-- 1.5 Jugadores por nacionalidad
+SELECT 
+    n.nombre as nacionalidad,
+    COUNT(*) as total_jugadores,
+    ROUND(COUNT(*) * 100.0 / (SELECT COUNT(*) FROM jugadores), 2) as porcentaje
+FROM jugadores j
+INNER JOIN nacionalidad n ON j.id_nacionalidad = n.id
+GROUP BY n.nombre
+ORDER BY total_jugadores DESC;
