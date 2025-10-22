@@ -152,7 +152,7 @@ ALTER TABLE `jugadores_posicion`
 ADD FOREIGN KEY (`id_posicion`) REFERENCES `posicion`(`id`);
 ```
 
-🧩 Paso 4: Carga del CSV -> al motor de bases de datos.
+## 🧩 Paso 4: Carga del CSV -> al motor de bases de datos.
 
 ```python 
 import mysql.connector
@@ -225,7 +225,7 @@ conexion.close()
 ```
 
   
-## 🧩 Paso 4: Normalizacion de datos.
+## 🧩 Paso 5: Normalizacion de datos.
 
 cargamos el CSV en una tabla especifica para este mismo. Y empezamos la normalizacion de las tablas con los datos.
 
