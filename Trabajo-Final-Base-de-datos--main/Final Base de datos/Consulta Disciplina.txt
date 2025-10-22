@@ -1,0 +1,66 @@
+-- ============================================
+-- SECCIÓN 3: DISCIPLINA (TARJETAS)
+-- ============================================
+
+-- 3.1 Jugadores con más tarjetas amarillas
+SELECT 
+    j.nombre,
+    e.nombre as equipo,
+    c.nombre as competicion,
+    est.tarjetas_amarillas,
+    est.tarjetas_rojas
+FROM jugadores j
+INNER JOIN jugadores_estadisticas je ON j.id = je.id_jugador
+INNER JOIN estadisticas est ON je.id_estadisticas = est.id
+INNER JOIN equipo e ON je.id_equipo = e.id
+INNER JOIN competicion c ON e.id_competicion = c.id
+WHERE est.tarjetas_amarillas > 0
+ORDER BY est.tarjetas_amarillas DESC, est.tarjetas_rojas DESC
+LIMIT 20;
+
+-- 3.2 Jugadores con tarjetas rojas
+SELECT 
+    j.nombre,
+    j.edad,
+    e.nombre as equipo,
+    c.nombre as competicion,
+    est.tarjetas_rojas,
+    est.tarjetas_amarillas
+FROM jugadores j
+INNER JOIN jugadores_estadisticas je ON j.id = je.id_jugador
+INNER JOIN estadisticas est ON je.id_estadisticas = est.id
+INNER JOIN equipo e ON je.id_equipo = e.id
+INNER JOIN competicion c ON e.id_competicion = c.id
+WHERE est.tarjetas_rojas > 0
+ORDER BY est.tarjetas_rojas DESC, est.tarjetas_amarillas DESC;
+
+-- 3.3 Equipos con más tarjetas
+SELECT 
+    e.nombre as equipo,
+    c.nombre as competicion,
+    SUM(est.tarjetas_amarillas) as amarillas_totales,
+    SUM(est.tarjetas_rojas) as rojas_totales,
+    (SUM(est.tarjetas_amarillas) + SUM(est.tarjetas_rojas)) as tarjetas_totales
+FROM equipo e
+INNER JOIN competicion c ON e.id_competicion = c.id
+INNER JOIN jugadores_estadisticas je ON e.id = je.id_equipo
+INNER JOIN estadisticas est ON je.id_estadisticas = est.id
+GROUP BY e.nombre, c.nombre
+ORDER BY tarjetas_totales DESC
+LIMIT 20;
+
+-- 3.4 Disciplina por competición
+SELECT 
+    c.nombre as competicion,
+    COUNT(DISTINCT j.id) as jugadores,
+    SUM(est.tarjetas_amarillas) as amarillas,
+    SUM(est.tarjetas_rojas) as rojas,
+    ROUND(AVG(est.tarjetas_amarillas), 2) as promedio_amarillas,
+    ROUND(AVG(est.tarjetas_rojas), 2) as promedio_rojas
+FROM competicion c
+INNER JOIN equipo e ON c.id = e.id_competicion
+INNER JOIN jugadores_estadisticas je ON e.id = je.id_equipo
+INNER JOIN jugadores j ON je.id_jugador = j.id
+INNER JOIN estadisticas est ON je.id_estadisticas = est.id
+GROUP BY c.nombre
+ORDER BY amarillas DESC;
