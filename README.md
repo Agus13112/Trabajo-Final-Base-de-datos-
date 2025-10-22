@@ -1,20 +1,26 @@
-# Trabajo-Final-Base-de-datos-
-Registro de jugadores de las 5 ligas de Europa
+# ⚽ Registro de Jugadores de las 5 Ligas de Europa
 
-Hecho por Juan Manuel Comizzo y Agustin Vallejos
+**Proyecto realizado por:**  
+🧑‍💻 Juan Manuel Comizzo  
+🧑‍💻 Agustín Vallejos  
 
-Paso 1:
+---
 
-Para realizar este trabajo final se tuvo que buscar una base de datos en formato csv. La cual la buscamos desde la pagina de Kaggle : https://www.kaggle.com/datasets.
+## 📌 Paso 1: Selección de la Base de Datos
 
-El link de la base de base es el siguiente: 
-https://www.kaggle.com/code/mahmoudredagamail/football-players-stats-2025-2026
+Para realizar este trabajo final, se buscó una base de datos en formato **CSV**, proveniente del sitio [Kaggle](https://www.kaggle.com/datasets).
 
-Paso 2:
+📂 **Fuente de la base de datos:**  
+[Football Players Stats 2025-2026](https://www.kaggle.com/code/mahmoudredagamail/football-players-stats-2025-2026)
 
-Despues de realizar la eleccion de la base de datos empezamos a hacer el Diagrama de Clase de acuerdo a los datos que elegimos.
+---
 
-Primero hicimos el diagrma de clases en formato papel(boceto), para tener un panorama de como armar el trabajo final. Consultando y preguntando por correciones y errores con Matias Nardelli y Ariel Nardelli. 
+## 🧩 Paso 2: Diagrama de Clases
+
+Luego de elegir la base de datos, se realizó el **diagrama de clases** de acuerdo con los datos seleccionados.
+
+El primer boceto fue hecho a mano, para tener una visión general de cómo estructurar el trabajo final.  
+Durante el proceso se realizaron **consultas y correcciones** junto a **Matías Nardelli** y **Ariel Nardelli** para asegurar la correcta organización de las entidades y sus relaciones.
 
 ![WhatsApp Image 2025-10-10 at 13 34 56](https://github.com/user-attachments/assets/fc9e307f-cc21-481c-a5c2-9993cda0fe5e)
 
@@ -22,46 +28,129 @@ Una vez que el boceto del diagrama de clase quedo bien armado lo pasamos https:/
 
 ![WhatsApp Image 2025-10-04 at 11 18 00](https://github.com/user-attachments/assets/b48f9210-7791-475e-8ee1-b30d0f7961d9)
 
-Paso 3: 
-  Creacion de la base de datos y sus tablas.
+## 🏗️ Paso 3: Creación de la Base de Datos y sus Tablas
+
+En esta etapa se procedió a la **creación de la base de datos** y las **tablas correspondientes** utilizando **SQL**.  
+El objetivo fue estructurar la información de manera **normalizada**, garantizando la integridad y consistencia de los datos.
   
-<img width="404" height="218" alt="imagen" src="https://github.com/user-attachments/assets/a06cad7e-00a7-400f-8994-b643b5a649e0" />
+```sql
+CREATE TABLE `jugadores` (
+  `id` INTEGER PRIMARY KEY NOT NULL AUTO_INCREMENT,
+  `nombre` VARCHAR(255),
+  `edad` INTEGER,
+  `nacimiento` DATE,
+  `id_nacionalidad` INTEGER,
+  `jugador_posicion` INTEGER,
+  `jugador_estadisticas` INTEGER
+);
+
+```
 
 -----------------------------------------------------------------------------------------------------------------------------------
 
-<img width="411" height="97" alt="imagen" src="https://github.com/user-attachments/assets/74ef8a19-0c7c-4773-91de-074fb2dc33ba" />
+```sql
+CREATE TABLE `nacionalidad` (
+  `id` INTEGER PRIMARY KEY NOT NULL AUTO_INCREMENT,
+  `nombre` VARCHAR(255)
+);
+```
 
 -----------------------------------------------------------------------------------------------------------------------------------
 
-<img width="403" height="100" alt="imagen" src="https://github.com/user-attachments/assets/760b8522-07dd-4260-ba2a-d80cda3525ea" />
+```sql
+CREATE TABLE `posicion` (
+  `id` INTEGER PRIMARY KEY NOT NULL AUTO_INCREMENT,
+  `nombre` VARCHAR(255)
+);
+```
 
 -----------------------------------------------------------------------------------------------------------------------------------
 
-<img width="404" height="97" alt="imagen" src="https://github.com/user-attachments/assets/87acb732-c9d3-4de0-8be3-476ae0cd8ef9" />
+```sql
+CREATE TABLE `competicion` (
+  `id` INTEGER PRIMARY KEY NOT NULL AUTO_INCREMENT,
+  `nombre` VARCHAR(255)
+);
+```
 
 -----------------------------------------------------------------------------------------------------------------------------------
 
-<img width="405" height="119" alt="imagen" src="https://github.com/user-attachments/assets/b681b3e8-5336-4a7c-bacf-53aa7ded849a" />
+```sql
+CREATE TABLE `equipo` (
+  `id` INTEGER PRIMARY KEY NOT NULL AUTO_INCREMENT,
+  `nombre` VARCHAR(255),
+  `id_competicion` INTEGER
+);
+```
 
 -----------------------------------------------------------------------------------------------------------------------------------
 
-<img width="405" height="194" alt="imagen" src="https://github.com/user-attachments/assets/f88b8954-f57e-4509-977e-131a2d9db551" />
+```sql
+CREATE TABLE `estadisticas` (
+  `id` INTEGER PRIMARY KEY NOT NULL AUTO_INCREMENT,
+  `goles` INTEGER,
+  `asistencias` INTEGER,
+  `tarjetas_amarillas` INTEGER,
+  `tarjetas_rojas` INTEGER,
+  `minutos_jugados` TIME
+);
+```
 
 -----------------------------------------------------------------------------------------------------------------------------------
 
-<img width="476" height="144" alt="imagen" src="https://github.com/user-attachments/assets/f8044a1f-6ee3-45e1-b5ab-8f7c4de6638e" />
+```sql
+CREATE TABLE `jugadores_estadisticas` (
+  `id_equipo` INTEGER,
+  `id_jugador` INTEGER,
+  `id_estadisticas` INTEGER,
+  PRIMARY KEY (`id_equipo`, `id_jugador`, `id_estadisticas`)
+);
+```
 
 -----------------------------------------------------------------------------------------------------------------------------------
 
-<img width="446" height="146" alt="imagen" src="https://github.com/user-attachments/assets/5ef1de30-b777-4af8-b841-649cdb1caf94" />
+```sql
+CREATE TABLE `jugadores_posicion` (
+  `id_jugador` INTEGER,
+  `id_posicion` INTEGER,
+  `id_equipo` INTEGER,
+  PRIMARY KEY (`id_jugador`, `id_posicion`, `id_equipo`)
+);
+```
 
 -----------------------------------------------------------------------------------------------------------------------------------
 
-<img width="498" height="414" alt="imagen" src="https://github.com/user-attachments/assets/b9271836-ccc5-4322-a3d1-449d052a0e7e" />
+```sql
+-- Cada jugador pertenece a una nacionalidad
+ALTER TABLE `jugadores`
+ADD CONSTRAINT `fk_jugador_nacionalidad`
+FOREIGN KEY (`id_nacionalidad`) REFERENCES `nacionalidad`(`id`);
 
------------------------------------------------------------------------------------------------------------------------------------
+-- Cada equipo pertenece a una competición
+ALTER TABLE `equipo`
+ADD CONSTRAINT `fk_equipo_competicion`
+FOREIGN KEY (`id_competicion`) REFERENCES `competicion`(`id`);
 
-<img width="503" height="216" alt="imagen" src="https://github.com/user-attachments/assets/40ddf648-79b7-4824-992e-07a2ccea1f61" />
+-- Relación muchos a muchos entre jugadores, estadísticas y equipos
+ALTER TABLE `jugadores_estadisticas`
+ADD FOREIGN KEY (`id_jugador`) REFERENCES `jugadores`(`id`);
+
+ALTER TABLE `jugadores_estadisticas`
+ADD FOREIGN KEY (`id_equipo`) REFERENCES `equipo`(`id`);
+
+ALTER TABLE `jugadores_estadisticas`
+ADD FOREIGN KEY (`id_estadisticas`) REFERENCES `estadisticas`(`id`);
+
+-- Relación muchos a muchos entre jugadores, posición y equipos
+ALTER TABLE `jugadores_posicion`
+ADD FOREIGN KEY (`id_jugador`) REFERENCES `jugadores`(`id`);
+
+ALTER TABLE `jugadores_posicion`
+ADD FOREIGN KEY (`id_equipo`) REFERENCES `equipo`(`id`);
+
+ALTER TABLE `jugadores_posicion`
+ADD FOREIGN KEY (`id_posicion`) REFERENCES `posicion`(`id`);
+```
 
 
   
