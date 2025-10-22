@@ -304,8 +304,11 @@ DROP TEMPORARY TABLE temp_mapping;
 
 SELECT CONCAT('✓ Relaciones jugador-estadísticas: ', COUNT(*), ' registros') AS resultado
 FROM jugadores_estadisticas;
+```
 
+-----------------------------------------------------------------------------------------------------------------------------------
 
+```sql
 -- =============================================
 -- PASO 8: Relacionar JUGADORES con POSICIONES
 -- =============================================
